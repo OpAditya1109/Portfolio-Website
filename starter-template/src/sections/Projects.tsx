@@ -43,7 +43,7 @@ const portfolioProjects = [
       { title: "Increased page load speed by 50%" },
       { title: "Increased mobile responsiveness by 35%" },
     ],
-    link: "portfolio-website-eight-ivory.vercel.app",
+    link: "https://portfolio-website-eight-ivory.vercel.app/",
     image: portfolioproject,
   },
 ];
