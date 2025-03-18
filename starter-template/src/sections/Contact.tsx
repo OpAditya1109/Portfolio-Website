@@ -53,20 +53,13 @@ export const ContactSection = () => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.5 }}
             >
-              <motion.button
-                whileHover={{
-                  scale: 1.1,
-                  background: "whitesmoke",
-                  color: "black",
-                  boxShadow: "0px 0px 20px rgba(255, 255, 255, 0.6)",
-                }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="relative px-8 py-4 text-lg font-semibold uppercase tracking-wider text-white rounded-lg flex items-center gap-2 border border-gray-500 shadow-xl backdrop-blur-md bg-white/10"
+              <a
+                href="mailto:aditya8yadav8@gmail.com"
+                className="relative px-8 py-4 text-lg font-semibold uppercase tracking-wider text-white rounded-lg flex items-center gap-2 border border-gray-500 shadow-xl backdrop-blur-md bg-white/10 transition-transform duration-300 ease-out hover:scale-105 hover:bg-white hover:text-black hover:shadow-2xl"
               >
                 <span>Let's Talk</span>
                 <ArrowUpRightIcon className="size-6" />
-              </motion.button>
+              </a>
             </motion.div>
           </div>
         </motion.div>
