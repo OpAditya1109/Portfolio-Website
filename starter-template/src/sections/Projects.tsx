@@ -3,9 +3,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import ArrowupRightIcon from "@/assets/icons/arrow-up-right.svg";
-import darkSaasLandingPage from "@/assets/images/dark-saas-landing-page.png";
-import lightSaasLandingPage from "@/assets/images/light-saas-landing-page.png";
-import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
 import grainImage from "@/assets/images/grain.jpg";
 import lays from "@/assets/images/LAY's Project.png";
 import securapay from "@/assets/images/Secura-Pay.png";
@@ -14,18 +11,21 @@ import portfolioproject from "@/assets/images/Portfolio-Website.png";
 const portfolioProjects = [
   {
     title: "LAY'S Interactive Landing Page",
+    description: "An engaging landing page for LAY'S campaign designed to boost interaction and performance.",
     techStack: ["React.js", "Tailwind CSS", "Framer Motion", "Next.js"],
     link: "https://bug-busters-reimagine-round1.vercel.app/",
     image: lays,
   },
   {
     title: "Secura-Pay: Secure & Fast Blockchain Payments",
+    description: "A blockchain-based payment platform enabling secure and efficient crypto transactions.",
     techStack: ["React.js", "Solidity", "Ethers.js", "Node.js", "Smart Contracts"],
     link: "https://github.com/OpAditya1109/SecuraPay.git",
     image: securapay,
   },
   {
     title: "Crafting Digital Experiences with Innovation",
+    description: "A modern personal portfolio showcasing development work, animations, and contact integrations.",
     techStack: ["Next.js", "Tailwind CSS", "Framer Motion", "EmailJS"],
     link: "https://portfolio-website-eight-ivory.vercel.app/",
     image: portfolioproject,
@@ -82,6 +82,11 @@ export const ProjectsSection = () => {
                   <h3 className="font-serif text-2xl mt-2 md:text-4xl md:mt-5">
                     {project.title}
                   </h3>
+
+                  {/* Project Description */}
+                  <p className="text-white/70 text-sm md:text-base mt-3">
+                    {project.description}
+                  </p>
 
                   <hr className="border-t-2 border-white/5 mt-4 md:mt-5" />
 
