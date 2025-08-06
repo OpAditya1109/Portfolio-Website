@@ -44,7 +44,7 @@ export const ProjectsSection = () => {
           className="text-center"
         >
           <p className="uppercase font-semibold tracking-widest bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-transparent">
-            Featured Case Studies
+            Featured Project
           </p>
           <motion.h2
             initial={{ opacity: 0, scale: 0.8 }}
