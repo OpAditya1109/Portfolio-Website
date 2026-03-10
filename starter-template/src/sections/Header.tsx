@@ -244,8 +244,7 @@ export const Header = () => {
                   width: "100%", padding: "14px 0",
                   borderBottom: "1px solid rgba(255,255,255,0.05)",
                   background: "none", border: "none",
-                  borderBottom: "1px solid rgba(255,255,255,0.05)",
-                  cursor: "none", textAlign: "left",
+                                                    cursor: "none", textAlign: "left",
                 }}
               >
                 <span style={{
