@@ -36,7 +36,6 @@ const STATS = [
 ];
 
 export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
-  // ── Boot state ─────────────────────────────────────────
   const [booted, setBooted]             = useState(false);
   const [bootExit, setBootExit]         = useState(false);
   const [heroVisible, setHeroVisible]   = useState(false);
@@ -46,35 +45,30 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
     Array(BOOT_LINES.length).fill(false)
   );
 
-  // ── Terminal state ─────────────────────────────────────
-  const [termCmd, setTermCmd]     = useState("");
-  const [termOut, setTermOut]     = useState<string[]>([]);
+  const [termCmd, setTermCmd]       = useState("");
+  const [termOut, setTermOut]       = useState<string[]>([]);
   const [termCursor, setTermCursor] = useState(true);
 
-  // ── UI state ───────────────────────────────────────────
   const [showEmail, setShowEmail] = useState(false);
   const [copied, setCopied]       = useState(false);
 
-  // ── Cursor state ───────────────────────────────────────
   const mouseRef  = useRef({ x: 0, y: 0 });
   const ringRef   = useRef({ x: 0, y: 0 });
   const rafRef    = useRef<number | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [ringPos,   setRingPos]   = useState({ x: 0, y: 0 });
 
-  // ── Misc refs ──────────────────────────────────────────
   const bootedRef  = useRef(false);
   const tIdxRef    = useRef(0);
   const termTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  // ── Cursor animation ───────────────────────────────────
+  // ── Cursor ─────────────────────────────────────────────
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
       setCursorPos({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", onMove);
-
     const animate = () => {
       ringRef.current.x += (mouseRef.current.x - ringRef.current.x) * 0.18;
       ringRef.current.y += (mouseRef.current.y - ringRef.current.y) * 0.18;
@@ -82,21 +76,19 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
       rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
-
     return () => {
       window.removeEventListener("mousemove", onMove);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
-  // ── Terminal runner ────────────────────────────────────
+  // ── Terminal ───────────────────────────────────────────
   const runTermCmd = useCallback(() => {
     const seq = TERMINAL_SEQ[tIdxRef.current % TERMINAL_SEQ.length];
     tIdxRef.current++;
     setTermOut([]);
     setTermCmd("");
     setTermCursor(true);
-
     let i = 0;
     const iv = setInterval(() => {
       setTermCmd(seq.cmd.slice(0, i + 1));
@@ -105,10 +97,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
         clearInterval(iv);
         setTermCursor(false);
         seq.out.forEach((line, li) => {
-          const t = setTimeout(
-            () => setTermOut(prev => [...prev, line]),
-            400 + li * 120
-          );
+          const t = setTimeout(() => setTermOut(prev => [...prev, line]), 400 + li * 120);
           termTimers.current.push(t);
         });
         const next = setTimeout(runTermCmd, 400 + seq.out.length * 120 + 3200);
@@ -117,7 +106,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
     }, 55);
   }, []);
 
-  // ── Boot sequence ──────────────────────────────────────
+  // ── Boot ───────────────────────────────────────────────
   const launchHero = useCallback(() => {
     if (bootedRef.current) return;
     bootedRef.current = true;
@@ -131,42 +120,25 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
-
     BOOT_LINES.forEach((_, i) => {
-      timers.push(
-        setTimeout(() => {
-          setBootLineShow(prev => {
-            const next = [...prev];
-            next[i] = true;
-            return next;
-          });
-        }, BOOT_LINES[i].delay)
-      );
+      timers.push(setTimeout(() => {
+        setBootLineShow(prev => { const next = [...prev]; next[i] = true; return next; });
+      }, BOOT_LINES[i].delay));
     });
-
     timers.push(setTimeout(() => setProgressVisible(true), 1600));
-
-    timers.push(
-      setTimeout(() => {
-        let p = 0;
-        const iv = setInterval(() => {
-          p += Math.random() * 3.5 + 1;
-          if (p >= 100) {
-            p = 100;
-            clearInterval(iv);
-            setTimeout(launchHero, 300);
-          }
-          setBootProgress(Math.min(Math.floor(p), 100));
-        }, 40);
-      }, 1650)
-    );
-
+    timers.push(setTimeout(() => {
+      let p = 0;
+      const iv = setInterval(() => {
+        p += Math.random() * 3.5 + 1;
+        if (p >= 100) { p = 100; clearInterval(iv); setTimeout(launchHero, 300); }
+        setBootProgress(Math.min(Math.floor(p), 100));
+      }, 40);
+    }, 1650));
     return () => timers.forEach(clearTimeout);
   }, [launchHero]);
 
   useEffect(() => () => termTimers.current.forEach(clearTimeout), []);
 
-  // ── Email copy ─────────────────────────────────────────
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText("aditya8yadav8@gmail.com");
@@ -174,13 +146,11 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // ── Helpers ────────────────────────────────────────────
   const anim = (delay: string) =>
     heroVisible
       ? { animation: `slideUp 0.7s cubic-bezier(0.16,1,0.3,1) ${delay} forwards` as const }
       : {};
 
-  // ══════════════════════════════════════════════════════
   return (
     <>
       <style>{`
@@ -204,13 +174,11 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
           50%     { opacity:1;   transform:scaleY(1)   translateY(4px);  }
         }
 
-        .skill-chip:hover        { border-color:#e8ff47 !important; color:#e8ff47 !important; }
-        .nav-link:hover          { color:#e8eaf0 !important; }
-        .bottom-link:hover       { color:#e8eaf0 !important; }
-        .resume-pill:hover       { background:#e8ff47 !important; color:#04050a !important; }
-        .btn-ghost:hover         { border-color:#e8eaf0 !important; color:#e8eaf0 !important; }
-        .copy-btn-el:hover       { background:rgba(232,255,71,0.1); }
-        .skip-btn:hover          { color:#e8eaf0 !important; }
+        .skill-chip:hover  { border-color:#e8ff47 !important; color:#e8ff47 !important; }
+        .bottom-link:hover { color:#e8eaf0 !important; }
+        .btn-ghost:hover   { border-color:#e8eaf0 !important; color:#e8eaf0 !important; }
+        .copy-btn-el:hover { background:rgba(232,255,71,0.1); }
+        .skip-btn:hover    { color:#e8eaf0 !important; }
 
         .btn-primary { position:relative; overflow:hidden; }
         .btn-primary::after {
@@ -222,6 +190,69 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
         .btn-primary:hover::after { transform:translateX(0); }
         .btn-primary:hover        { box-shadow:0 0 30px rgba(232,255,71,0.35) !important; }
         .btn-primary:active       { transform:scale(0.97); }
+        /* ── Mobile responsive ── */
+        @media (max-width: 768px) {
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+            grid-template-rows: auto auto auto !important;
+          }
+          .hero-left {
+            grid-column: 1 !important;
+            padding: 80px 24px 40px !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+          }
+          .hero-right {
+            grid-column: 1 !important;
+          }
+          .hero-terminal {
+            margin: 32px 24px 0 !important;
+          }
+          .hero-stats > div {
+            padding: 20px 14px !important;
+          }
+          .hero-footer {
+            grid-column: 1 !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 16px !important;
+            padding: 20px 24px !important;
+          }
+          .hero-footer-links {
+            gap: 20px !important;
+            flex-wrap: wrap !important;
+          }
+          .hero-scroll-hint { display: none !important; }
+          .hero-divider { display: none !important; }
+          .hero-ghost-num { display: none !important; }
+          .hero-cta-row {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          .hero-cta-row > button {
+            width: 100% !important;
+          }
+          .boot-lines div {
+            white-space: normal !important;
+            font-size: 10px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-left {
+            padding: 72px 20px 32px !important;
+          }
+          .hero-terminal {
+            margin: 20px 20px 0 !important;
+          }
+          .hero-stats {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .hero-stats > div:nth-child(3) {
+            grid-column: span 2 !important;
+            border-right: none !important;
+            border-top: 1px solid rgba(255,255,255,0.07) !important;
+          }
+        }
       `}</style>
 
       {/* Custom cursor */}
@@ -272,7 +303,6 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
             ))}
           </div>
 
-          {/* Progress bar */}
           <div style={{
             marginTop:32, display:"flex", alignItems:"center", gap:16,
             opacity: progressVisible ? 1 : 0, transition:"opacity 0.4s",
@@ -307,74 +337,31 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
       )}
 
       {/* ══ HERO ══ */}
-      <div style={{
+      {/* pt-[56px] offsets the fixed Header height */}
+      <div id="home" style={{
         minHeight:"100vh",
+        paddingTop: 56,
         display:"grid",
         gridTemplateColumns:"1fr 1fr",
-        gridTemplateRows:"auto 1fr auto",
+        gridTemplateRows:"1fr auto",
         background:"#04050a", color:"#e8eaf0",
         position:"relative", overflow:"hidden",
         fontFamily:"'DM Sans',sans-serif",
         opacity: heroVisible ? 1 : 0,
         transition:"opacity 0.8s ease 0.1s",
-      }}>
+      }} className="hero-grid">
         {/* Vertical divider */}
         <div style={{
           position:"absolute", left:"50%", top:0, bottom:0,
           width:1, background:"rgba(255,255,255,0.07)", pointerEvents:"none",
-        }} />
-
-        {/* ── TOPBAR ──
-        <header style={{
-          gridColumn:"1 / -1",
-          display:"flex", alignItems:"center", justifyContent:"space-between",
-          padding:"20px 48px",
-          borderBottom:"1px solid rgba(255,255,255,0.07)",
-          fontFamily:"'IBM Plex Mono',monospace",
-          fontSize:11, color:"rgba(232,234,240,0.35)", letterSpacing:"0.12em",
-        }}>
-          <div style={{ display:"flex", gap:28, alignItems:"center" }}>
-            <span style={{
-              fontFamily:"'Bebas Neue',cursive",
-              fontSize:22, letterSpacing:"0.06em", color:"#e8eaf0",
-            }}>AY</span>
-            <div style={{
-              width:6, height:6, borderRadius:"50%",
-              background:"#e8ff47", boxShadow:"0 0 10px #e8ff47",
-              animation:"pulse-dot 2s ease-in-out infinite",
-            }} />
-            <span>PORTFOLIO v2025</span>
-          </div>
-          <nav style={{ display:"flex", gap:24, alignItems:"center" }}>
-            {(["WORK","ABOUT","CONTACT"] as const).map(l => (
-              <a key={l} href={`#${l.toLowerCase()}`} className="nav-link"
-                style={{
-                  color:"rgba(232,234,240,0.35)", textDecoration:"none",
-                  cursor:"none", letterSpacing:"0.1em", transition:"color 0.2s",
-                }}>{l}</a>
-            ))}
-            <a
-              href="/Aditya_Yadav_Resume.pdf"
-              download target="_blank" rel="noopener noreferrer"
-              className="resume-pill"
-              style={{
-                padding:"6px 16px",
-                border:"1px solid #e8ff47", color:"#e8ff47",
-                borderRadius:2, fontWeight:600, letterSpacing:"0.15em",
-                textDecoration:"none", cursor:"none",
-                transition:"background 0.2s, color 0.2s",
-              }}
-            >RÉSUMÉ ↓</a>
-          </nav>
-        </header> */}
+        }} className="hero-divider" />
 
         {/* ── LEFT PANEL ── */}
-        <section style={{
+        <section className="hero-left" style={{
           gridColumn:1, padding:"60px 48px",
           display:"flex", flexDirection:"column", justifyContent:"center",
           borderRight:"1px solid rgba(255,255,255,0.07)",
         }}>
-
           {/* Available badge */}
           <div style={{
             display:"inline-flex", alignItems:"center", gap:8,
@@ -453,7 +440,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
             display:"flex", gap:14, marginTop:48,
             alignItems:"center", flexWrap:"wrap",
             opacity:0, ...anim("0.55s"),
-          }}>
+          }} className="hero-cta-row">
             <button
               onClick={scrollToProjects}
               className="btn-primary"
@@ -507,7 +494,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
         </section>
 
         {/* ── RIGHT PANEL ── */}
-        <section style={{
+        <section className="hero-right" style={{
           gridColumn:2, display:"flex", flexDirection:"column",
           position:"relative", overflow:"hidden",
         }}>
@@ -519,7 +506,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
             position:"absolute", top:-20, right:-20,
             pointerEvents:"none", userSelect:"none", letterSpacing:"-0.04em",
             opacity: heroVisible ? 1 : 0, transition:"opacity 1s ease 0.8s",
-          }}>6+</div>
+          }} className="hero-ghost-num">6+</div>
 
           {/* Terminal */}
           <div style={{
@@ -531,8 +518,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
             opacity: heroVisible ? 1 : 0,
             transform: heroVisible ? "translateY(0)" : "translateY(20px)",
             transition:"opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s",
-          }}>
-            {/* Title bar */}
+          }} className="hero-terminal">
             <div style={{
               display:"flex", alignItems:"center", gap:8, padding:"10px 16px",
               borderBottom:"1px solid rgba(255,255,255,0.07)",
@@ -546,8 +532,6 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
                 color:"rgba(232,234,240,0.35)", marginLeft:8, letterSpacing:"0.1em",
               }}>aditya@portfolio — bash</span>
             </div>
-
-            {/* Body */}
             <div style={{
               padding:20, fontFamily:"'IBM Plex Mono',monospace",
               fontSize:"clamp(10px,1vw,12px)", lineHeight:2, minHeight:160,
@@ -575,7 +559,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
             display:"grid", gridTemplateColumns:"1fr 1fr 1fr",
             borderTop:"1px solid rgba(255,255,255,0.07)", marginTop:"auto",
             opacity: heroVisible ? 1 : 0, transition:"opacity 0.6s ease 0.7s",
-          }}>
+          }} className="hero-stats">
             {STATS.map(({ num, sup, label }, i) => (
               <div key={label} style={{
                 padding:"28px 32px",
@@ -599,7 +583,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
         </section>
 
         {/* ── BOTTOM BAR ── */}
-        <footer style={{
+        <footer className="hero-footer" style={{
           gridColumn:"1 / -1",
           display:"flex", alignItems:"center", justifyContent:"space-between",
           padding:"16px 48px",
@@ -608,7 +592,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
           color:"rgba(232,234,240,0.35)", letterSpacing:"0.15em",
           opacity: heroVisible ? 1 : 0, transition:"opacity 0.6s ease 0.9s",
         }}>
-          <div style={{ display:"flex", gap:32 }}>
+          <div className="hero-footer-links" style={{ display:"flex", gap:32 }}>
             {[
               { label:"GITHUB",    href:"https://github.com/OpAditya1109" },
               { label:"LINKEDIN",  href:"https://linkedin.com/in/aditya-cyber-mern" },
@@ -622,7 +606,7 @@ export const HeroSection = ({ scrollToProjects }: HeroSectionProps) => {
                 }}>{label}</a>
             ))}
           </div>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <div className="hero-scroll-hint" style={{ display:"flex", alignItems:"center", gap:10 }}>
             <span>SCROLL</span>
             <div style={{
               width:1, height:40,
