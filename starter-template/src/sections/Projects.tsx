@@ -113,7 +113,7 @@ const MORE_PROJECTS = [
     techStack: ["React.js", "Node.js", "Express.js", "MongoDB", "JWT"],
     link: "https://bhavanamatrimony.com",
     github: null,
-    screenshot: "/projects/bhavanamatrimony.png",
+    screenshot: "/projects/BhavanaMatrimony.png",
     status: "LIVE",
     highlight: "MERN · MATRIMONY",
     category: "FULLSTACK",
