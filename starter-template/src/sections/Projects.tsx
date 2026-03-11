@@ -39,7 +39,7 @@ const ALL_PROJECTS = [
     techStack: ["Shopify", "Liquid", "JavaScript", "Bluedart API", "WhatsApp API"],
     link: "https://wellbi.in",
     github: null,
-    screenshot: "/projects/wellbi.png",
+    screenshot: "/projects/Wellbi.png",
     status: "LIVE",
     highlight: "SHOPIFY · CUSTOM DEV",
     category: "SHOPIFY",
