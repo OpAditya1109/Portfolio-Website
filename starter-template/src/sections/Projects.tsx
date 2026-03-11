@@ -53,7 +53,7 @@ const ALL_PROJECTS = [
     techStack: ["Shopify", "Liquid", "JavaScript", "CSS"],
     link: "https://bombucha.in",
     github: null,
-    screenshot: "/projects/bombucha.png",
+    screenshot: "/projects/Bombucha.png",
     status: "LIVE",
     highlight: "SHOPIFY · FULL BUILD",
     category: "SHOPIFY",
